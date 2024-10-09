@@ -119,6 +119,9 @@ const EditMovie = () => {
           errorMsg={"Please enter a description"}
         />
 
+        <hr/>
+        <h3>Genres</h3>
+
       </form>
     </div>
   )
