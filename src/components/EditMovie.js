@@ -1,3 +1,4 @@
+import Swal from 'sweetalert2';
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import Input from "./form/Input";
@@ -114,6 +115,17 @@ const EditMovie = () => {
       }
     })
 
+    if(movie.genres_array.length === 0)
+    {
+      Swal.fire({
+        title: 'Error!',
+        text: 'You must choose at least one genre!',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      })
+      errors.push("genres");
+    }
+
     setErrors(errors);
 
     if (errors.length > 0) {
@@ -158,7 +170,7 @@ const EditMovie = () => {
     <div>
       <h2>Add/Edit Movie</h2>
       <hr />
-      <pre>{JSON.stringify(movie, null, 3)}</pre>
+      {/*<pre>{JSON.stringify(movie, null, 3)}</pre>*/}
 
       <form onSubmit={handleSubmit}>
         <input type="hidden" name="id" value={movie.id} id="id"></input>
