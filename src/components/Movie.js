@@ -2,32 +2,52 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 const Movie = () => {
-  const [movie, setMovie] = useState({});
+    const [movie, setMovie] = useState({});
+    let { id } = useParams();
 
-  let { id } = useParams();
+    useEffect(() => {
+        const headers = new Headers();
+        headers.append("Content-Type", "application/json");
 
-  useEffect(() => {
-    let myMovie =
-    {
-      id: 1,
-      title: "HighLander",
-      release_date: "1986-03-07",
-      runtime: 116,
-      mpaa_rating: "R",
-      description: "Some long description",
+        const requestOptions = {
+            method: "GET",
+            headers: headers,
+        }
+
+        fetch(`/movies/${id}`, requestOptions)
+            .then((response) => response.json())
+            .then((data) => {
+                setMovie(data);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }, [id])
+
+    if (movie.genres) {
+        movie.genres = Object.values(movie.genres);
+    } else {
+        movie.genres = [];
     }
 
-    setMovie(myMovie);
-  }, [id])
+    return(
+        <div>
+            <h2>Movie: {movie.title}</h2>
+            <small><em>{movie.release_date}, {movie.runtime} minutes, Rated {movie.mpaa_rating}</em></small><br />
+            {movie.genres.map((g) => (
+                <span key={g.genre} className="badge bg-secondary me-2">{g.genre}</span>
+            ))}
+            <hr />
 
-  return (
-    <div>
-      <h2>Movie: {movie.title}</h2>
-      <small><em>{movie.release_date}, {movie.runtime} minutes, Rated {movie.mpaa_rating}</em></small>
-      <hr />
-      <p>{movie.description}</p>
-    </div>
-  )
+            {movie.image !== "" &&
+                <div className="mb-3">
+                    <img src={`https://image.tmdb.org/t/p/w200/${movie.image}`} alt="poster" />
+                </div>
+            }
+
+            <p>{movie.description}</p>
+        </div>
+    )
 }
 
 export default Movie;
